@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Building F",
+      "hasCanvas": false,
+      "bodyTextLen": 1563,
+      "bodyTextHash": "070edb4981fb0f94bff1f4a39c191fe61b06e43bc5888f698b9e6c462c4bf2a6",
+      "bodyTextPrefix": "Building F 187 units · 73 stacks Dark Undo Redo Reset Export Imp",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Building F",
+      "hasCanvas": false,
+      "bodyTextLen": 1281,
+      "bodyTextHash": "b10a34e393f8cfc2cccda024916027a6bdfeba4c966032a48c0b826ba8109ad2",
+      "bodyTextPrefix": "Building F 187 units · 73 stacks More All 187 Austrian Winter Pe",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
