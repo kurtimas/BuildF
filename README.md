@@ -6,7 +6,7 @@ Interactive map of Building F. Drag totes, boxes, split stacks, and the scale be
 
 - A computer with Windows, Mac, or Linux
 - [Node.js 22](https://nodejs.org) or newer (the installer includes npm)
-- Nothing else for day-to-day use
+- Nothing else for day-to-day use on one computer
 
 ## Install
 
@@ -49,37 +49,74 @@ Until you save, changes live only in that browser.
 2. The first time, choose a password (at least 4 characters). After that, the same password is required.
 3. Other computers on the same running app can click **Load shared** to pick up that floor.
 
-The built-in database is in memory. **Save to server is wiped when you stop `npm run dev` and start it again.** Your own browser still has the last layout. Click **Export** if you want a file that survives a restart.
+While you are only running `npm run dev` on your computer, the shared database is in memory. **Save to server is wiped when you stop the app and start it again.** Your own browser still has the last layout. Click **Export** if you want a file that survives a restart.
 
-To keep the shared floor after a restart, use Postgres (optional, below).
+To keep the shared floor after a restart, host it with Postgres. That is the next section.
 
-## Optional: a floor that survives restarts
+## Host it so other people can open it
 
-1. Create an empty Postgres database (Neon, a local Postgres install, or similar).
-2. In the project folder, create a file named `.env` (note the leading dot):
+Do not leave `npm run dev` running as the public site. A hosted copy needs two things:
+
+1. A website host.
+2. A Postgres database, so **Save to server** sticks.
+
+Anyone with the link can look at the floor. The password only stops them from saving over it.
+
+### Easiest: Vercel plus a free database
+
+1. Create a free database at [Neon](https://neon.tech). Copy the connection string. It looks like `postgres://user:password@host/neondb`.
+2. Put this project on [GitHub](https://github.com) (a private repo is fine). Upload the unzipped folder, not the zip itself.
+3. Go to [Vercel](https://vercel.com), choose **Add New Project**, and import that repo.
+4. Set the build command to `npm run build`.
+5. Add these environment variables, then deploy:
 
 ```bash
-DATABASE_URL=postgres://USER:PASSWORD@HOST:5432/DATABASE
-YARD_SAVE_PASSWORD=choose-a-shared-password
+DATABASE_URL=postgres://user:password@host/neondb
+YARD_SAVE_PASSWORD=a-password-the-crew-will-share
+VITE_AUTH_ENABLED=false
 ```
 
-`YARD_SAVE_PASSWORD` is optional. If you set it, that password is the only one that can save, and nobody can pick a different one in the browser.
+`VITE_AUTH_ENABLED=false` lets people open the map without making an account. `YARD_SAVE_PASSWORD` is the password for **Save to server**. Pick something the warehouse can share, and do not use a password you use anywhere else.
 
-3. Stop the app (Ctrl+C) and start it again with `npm run dev`.
+6. Open the `*.vercel.app` address Vercel gives you. On one phone, use **Save to server**. On another phone, use **Load shared** and confirm the same floor comes back.
 
-The table is created for you from `migrations/0001_yard_floor.sql`.
+### Your own server
 
-## Optional: run the built copy
+Use this if the map should live on a shop computer or a VPS you control.
+
+1. Install Node.js 22 and Postgres on that machine.
+2. Create an empty database and a user that can write to it.
+3. Copy the project onto the server, then:
+
+```bash
+npm install
+npm run build
+```
+
+4. Start it with the database and password set. On Linux:
+
+```bash
+export DATABASE_URL=postgres://user:password@localhost:5432/building_f
+export YARD_SAVE_PASSWORD=a-password-the-crew-will-share
+export VITE_AUTH_ENABLED=false
+npm run preview
+```
+
+That listens on the server itself at [http://127.0.0.1:8081](http://127.0.0.1:8081). Put Caddy or Nginx in front of it so other computers can open it, and use HTTPS. Keep the process running with `systemd` or `pm2` so it comes back after a reboot.
+
+Do not put the real database URL or password in the zip, in git, or in a screenshot.
+
+## Optional: run the built copy on this computer
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Then open the address the preview command prints.
+Then open [http://127.0.0.1:8081](http://127.0.0.1:8081). Without `DATABASE_URL`, this still forgets the shared floor when you stop it.
 
 ## If something fails
 
 - `npm` is not recognized: install Node.js 22 and close and reopen the terminal.
-- Port already in use: something else is on 8080. Close the other copy, or run `npm run dev -- --port 3000` and open [http://localhost:3000](http://localhost:3000).
-- The page asks you to sign in: this folder includes `.grok/app-env.json` with sign-in turned off. Keep that file next to `package.json`.
+- Port already in use: something else is using that port. Close the other copy.
+- The page asks you to sign in: this folder includes `.grok/app-env.json` with sign-in turned off. Keep that file next to `package.json`. On a host, set `VITE_AUTH_ENABLED=false`.
