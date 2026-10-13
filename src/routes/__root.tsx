@@ -1,6 +1,7 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { YardApp } from "@/components/yard/yard-app";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Building F";
@@ -47,4 +48,5 @@ export const Route = createRootRoute({
       </body>
     </html>
   ),
+  notFoundComponent: () => <YardApp />,
 });
